@@ -1,10 +1,10 @@
 from json import load
 
-from domain import Manifest
+from application.dto.ManifestDto import ManifestDto
 from infrastructure import gm_implemntation
 
 
-def get_manifest() -> Manifest:
+def get_manifest() -> ManifestDto:
     with open(**gm_implemntation) as file:
         data = load(file)
-        return Manifest.From(data)
+        return ManifestDto.From(data)
