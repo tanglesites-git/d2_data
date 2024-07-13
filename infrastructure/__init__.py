@@ -1,136 +1,66 @@
-import concurrent.futures
-from json import dumps
-from pathlib import Path
+from concurrent.futures import ThreadPoolExecutor
+from json import dumps, loads
+from typing import Type
 
 from requests import get
 
-from application.dto.DamageTypeDto import DamageTypeDto
-from application.dto.LoreDto import LoreDto
-from application.dto.ManifestDto import ManifestDto
-from application.dto.PlugSetDto import PlugSetTypeDto
-from application.dto.SlotTypeDto import SlotTypeDto
-from application.dto.StatsDto import StatsDto
-from application.dto.WeaponDto import WeaponDto
-from application.interfaces import imanifestIO, irequests, iopenIO
-from common import config, DirectoryPaths
+from application.Interfaces.func_interfaces import irequest, iopenIO
+from kernel import Files, URI
 
-directory_list = [
-    DirectoryPaths.DestinyInventoryItemDefinition,
-    DirectoryPaths.DestinyStatDefinition,
-    DirectoryPaths.DestinyDamageTypeDefinition,
-    DirectoryPaths.DestinySlotTypeDefinition,
-    DirectoryPaths.DestinyLoreDefinition,
-    DirectoryPaths.DestinyPlugSetDefinition,
-    DirectoryPaths.DestinyEquipmentSlotDefinition
-]
-
-gm_implemntation = imanifestIO("manifest.json", "r", "utf-8")
-
-requests_json_files = irequests(stream=True, allow_redirects=True, headers={'x-api-key': config["x-api-key"]})
-
-create_json_files_IO = iopenIO("w", "utf-8")
-
-append_json_files_IO = iopenIO("a", "utf-8")
+manifest_irequest = irequest("https://www.bungie.net/Platform/Destiny2/Manifest/")
+manifest_disk_write = iopenIO(Files.ManifestJson)
 
 
-def get_json_component_content_path_destiny_inventory_item_definition(filepath_name: str, url: str):
-    with open(**create_json_files_IO(filepath_name)) as file_zero:
-        file_zero.write("")
-    with open(**append_json_files_IO(filepath_name)) as file_one:
-        with get(**requests_json_files(url)) as response:
-            data = (x for x in response.json().items())
-            objs = (y for y in [x for x in data if x[1]['itemType'] == 3])
-            [file_one.write(str(y) + '\n') for y in [WeaponDto.From(x[1]) for x in objs]]
+class ManifestService:
+
+    @staticmethod
+    def get_manifest():
+        if Files.ManifestJson.exists():
+            with open(Files.ManifestJson) as file:
+                return loads(file.read())
+        manifest_dict = download_manifest()
+        write_manifest_to_disk(manifest_dict)
+        return manifest_dict
 
 
-def get_json_component_content_path_destiny_stats(filepath_name: str, url: str):
-    with open(**create_json_files_IO(filepath_name)) as file_zero:
-        file_zero.write("")
-    with open(**append_json_files_IO(filepath_name)) as file_one:
-        with get(**requests_json_files(url)) as response:
-            data = (x for x in response.json().items())
-            objs = (y for y in [x for x in data])
-            [file_one.write(str(y) + '\n') for y in [StatsDto.From(x[1]) for x in objs]]
+def irequest_json_world_component_content_paths_wrapper(url: str):
+    return irequest(f'{URI.BaseUrl}{url}')
 
 
-def get_json_component_content_path_destiny_damage_types(filepath_name: str, url: str):
-    with open(**create_json_files_IO(filepath_name)) as file_zero:
-        file_zero.write("")
-    with open(**append_json_files_IO(filepath_name)) as file_one:
-        with get(**requests_json_files(url)) as response:
-            data = (x for x in response.json().items())
-            objs = (y for y in [x for x in data])
-            [file_one.write(str(y) + '\n') for y in [DamageTypeDto.From(x[1]) for x in objs]]
+def irequest_wrapper(url: str):
+    return irequest(url)
 
 
-def get_json_component_content_path_destiny_slot_type(filepath_name: str, url: str):
-    with open(**create_json_files_IO(filepath_name)) as file_zero:
-        file_zero.write("")
-    with open(**append_json_files_IO(filepath_name)) as file_one:
-        with get(**requests_json_files(url)) as response:
-            data = (x for x in response.json().items())
-            objs = (y for y in [x for x in data])
-            [file_one.write(str(y) + '\n') for y in [SlotTypeDto.From(x[1]) for x in objs]]
+def iopenIO_wrapper(filepath: str):
+    return iopenIO(filepath)
 
 
-def get_json_component_content_path_destiny_lore(filepath_name: str, url: str):
-    with open(**create_json_files_IO(filepath_name)) as file_zero:
-        file_zero.write("")
-    with open(**append_json_files_IO(filepath_name)) as file_one:
-        with get(**requests_json_files(url)) as response:
-            data = (x for x in response.json().items())
-            objs = (y for y in [x for x in data])
-            [file_one.write(str(y) + '\n') for y in [LoreDto.From(x[1]) for x in objs]]
+def download_manifest():
+    with get(**manifest_irequest) as response:
+        if response.raise_for_status():
+            return None
+        return response.json()
 
 
-def create_json_files(manifest: ManifestDto):
-    get_json_component_content_path_destiny_inventory_item_definition('DestinyInventoryItemDefinition', manifest.Response
-                                                                      .jsonWorldComponentContentPaths.en.DestinyInventoryItemDefinition)
-    get_json_component_content_path_destiny_stats('DestinyStatDefinition', manifest.Response.jsonWorldComponentContentPaths.en.DestinyStatDefinition)
-    get_json_component_content_path_destiny_damage_types('DestinyDamageTypeDefinition', manifest.Response
-                                                         .jsonWorldComponentContentPaths.en.DestinyDamageTypeDefinition)
-    get_json_component_content_path_destiny_slot_type('DestinySlotTypeDefinition', manifest.Response
-                                                      .jsonWorldComponentContentPaths.en.DestinyEquipmentSlotDefinition)
-    get_json_component_content_path_destiny_lore('DestinyLoreDefinition', manifest.Response.jsonWorldComponentContentPaths.en.DestinyLoreDefinition)
+def write_manifest_to_disk(response: dict):
+    with open(**manifest_disk_write) as file:
+        file.write(dumps(response, indent=2))
 
 
-def map_to_weapon_dto(x):
-    with open(DirectoryPaths.DestinyInventoryItemDefinition / f"{x[0]}.json", 'w') as file:
-        file.write(dumps(WeaponDto.From(x[1]).__dict__(), indent=2))
+def download_json_world_component_content_paths(partial_filename: str, url: str):
+    with open(f'{Dir.Data}/{partial_filename}.json', "w", encoding="utf-8") as file:
+        with get(f'{URI.BaseUrl}{url}') as response:
+            if response.raise_for_status():
+                return {'error': response.raise_for_status(), 'url': url, 'filepath': partial_filename, 'status_code': response.status_code}
+            file.write(response.text)
 
 
-def map_to_stat(x):
-    with open(DirectoryPaths.DestinyStatDefinition / f"{x[0]}.json", 'w') as file:
-        file.write(dumps(StatsDto.From(x[1]).__dict__(), indent=2))
+def download_json_files_multi_threaded(manifest_dict: dict, uri: Type[URI]):
+    a, b = uri.init_JsonWorldComponentContentPaths(manifest_dict)
+
+    with ThreadPoolExecutor() as executor:
+        executor.map(download_json_world_component_content_paths, a, b)
 
 
-def map_to_damage_type(x):
-    with open(DirectoryPaths.DestinyEquipmentSlotDefinition / f"{x[0]}.json", 'w') as file:
-        file.write(dumps(DamageTypeDto.From(x[1]).__dict__(), indent=2))
-
-
-def map_to_lore(x):
-    with open(DirectoryPaths.DestinyLoreDefinition / f"{x[0]}.json", 'w') as file:
-        file.write(dumps(LoreDto.From(x[1]).__dict__(), indent=2))
-
-
-def map_to_equipment_slot(x):
-    with open(DirectoryPaths.DestinyEquipmentSlotDefinition / f"{x[0]}.json", 'w') as file:
-        file.write(dumps(SlotTypeDto.From(x[1]).__dict__(), indent=2))
-
-
-def map_to_plug_set(x):
-    with open(DirectoryPaths.DestinyPlugSetDefinition / f"{x[0]}.json", 'w') as file:
-        file.write(dumps(PlugSetTypeDto.From(x[1]).__dict__(), indent=2))
-
-
-def extract_data(url: Path, func: callable):
-    with get(**requests_json_files(url)) as res:
-        data = (x for x in res.json().items())
-        with concurrent.futures.ThreadPoolExecutor() as executor:
-            executor.map(func, data)
-
-
-def create_all_directories():
-    with concurrent.futures.ThreadPoolExecutor() as executor:
-        executor.map(DirectoryPaths.create_data_directory, directory_list)
+if __name__ == '__main__':
+    pass

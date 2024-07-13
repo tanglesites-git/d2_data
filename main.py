@@ -1,34 +1,22 @@
-from memory_profiler import memory_usage
-from requests import get
-
-from infrastructure import requests_json_files, extract_data, map_to_stat, map_to_damage_type, map_to_lore, map_to_equipment_slot, map_to_plug_set, \
-    map_to_weapon_dto, create_all_directories
-from utils import get_manifest
 from time import perf_counter_ns
-import concurrent.futures
 
 
-print("Memory usage (Before): %s (kb)" % memory_usage(include_children=True, multiprocess=True))
-start = perf_counter_ns()
+from memory_profiler import memory_usage
+from infrastructure import ManifestService, download_json_files_multi_threaded
+from kernel import URI, Dir
 
-manifest = get_manifest()
-url_base = manifest.Response.jsonWorldComponentContentPaths.en
-
-create_all_directories()
-extract_data(url_base.DestinyStatDefinition, map_to_stat)
-extract_data(url_base.DestinyDamageTypeDefinition, map_to_damage_type)
-extract_data(url_base.DestinyLoreDefinition, map_to_lore)
-extract_data(url_base.DestinyEquipmentSlotDefinition, map_to_equipment_slot)
-extract_data(url_base.DestinyPlugSetDefinition, map_to_plug_set)
-
-with get(**requests_json_files(manifest.Response.jsonWorldComponentContentPaths.en.DestinyInventoryItemDefinition)) as response:
-    data = (x for x in response.json().items())
-    objs = (y for y in [x for x in data if x[1]['itemType'] == 3])
-    with concurrent.futures.ThreadPoolExecutor() as executor:
-        executor.map(map_to_weapon_dto, objs)
-
-end = perf_counter_ns()
-print("Memory usage (After): %s (kb)" % memory_usage(include_children=True, multiprocess=True))
 
 if __name__ == '__main__':
-    print(f"Time: {(end - start) / 1_000_000_000} s")
+    start = perf_counter_ns()
+    mem_usage_start = memory_usage(include_children=True, multiprocess=True)
+    print(f"Memory usage (Before): {mem_usage_start[0]}MiB")
+
+    Dir.create_dirs()
+    manifest = ManifestService.get_manifest()
+    download_json_files_multi_threaded(manifest, URI)
+
+    mem_usage_end = memory_usage(include_children=True, multiprocess=True)
+    print(f"Memory usage (After): {mem_usage_end[0]}MiB")
+    end = perf_counter_ns()
+    print(f"Memory usage (Difference): {mem_usage_end[0][0] - mem_usage_start[0][0]}MiB")
+    print(f"Time taken: {(end - start) / 1_000_000_000}s")
