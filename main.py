@@ -1,10 +1,9 @@
 from time import perf_counter_ns
 
-
 from memory_profiler import memory_usage
-from infrastructure import ManifestService, download_json_files_multi_threaded
-from kernel import URI, Dir
 
+from infrastructure import ManifestService, download_json_files_multi_threaded, create_weapons_file
+from kernel import URI, Dir
 
 if __name__ == '__main__':
     start = perf_counter_ns()
@@ -14,6 +13,7 @@ if __name__ == '__main__':
     Dir.create_dirs()
     manifest = ManifestService.get_manifest()
     download_json_files_multi_threaded(manifest, URI)
+    create_weapons_file()
 
     mem_usage_end = memory_usage(include_children=True, multiprocess=True)
     print(f"Memory usage (After): {mem_usage_end[0]}MiB")

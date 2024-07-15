@@ -4,7 +4,6 @@ from application.dtos.JsonWorldComponentContentPaths import JsonWorldComponentCo
 class URI:
     BaseUrl = 'https://www.bungie.net/'
     Manifest = f'{BaseUrl}/Platform/Destiny2/Manifest'
-    JsonWorldComponentContentPaths = []
 
     @classmethod
     def init_JsonWorldComponentContentPaths(cls, manifest: dict):
