@@ -1,3 +1,5 @@
+from typing import Union
+
 from application.manifest_types.json_world_component_content_paths import JsonWorldComponentContentPaths
 from application.manifest_types.json_world_content_paths import JsonWorldContentPaths
 from application.manifest_types.mobile_gear_asset_databases import MobileGearAssetDataBases

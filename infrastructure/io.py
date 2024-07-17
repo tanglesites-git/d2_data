@@ -1,5 +1,6 @@
 from json import loads, dumps
 from os import getenv
+from subprocess import run, CalledProcessError
 
 from requests import get
 
@@ -16,3 +17,12 @@ def get_manifest() -> dict:
 
     with open(ManifestPath, "r", encoding='utf-8') as file:
         return loads(file.read())
+
+
+def run_docker():
+    try:
+        run(["docker-compose", "up", "-d"], check=True)
+        print("Docker container started")
+    except CalledProcessError as e:
+        print(f"Error starting docker container: {e}")
+        exit(1)
