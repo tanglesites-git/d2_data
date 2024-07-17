@@ -5,7 +5,7 @@ from concurrent.futures import ThreadPoolExecutor
 from memory_profiler import memory_usage
 from requests import get
 
-from infrastructure import get_manifest, ManifestRoot, run_docker
+from infrastructure import get_manifest, ManifestRoot
 from kernel import DataDirectory
 
 
