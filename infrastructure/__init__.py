@@ -9,6 +9,7 @@ from .socket_category_definitions import parse_socket_category_definitions
 from .stats_definitions import parse_stat_definitions
 from .lore_definitions import parse_lore_definitions
 from .weapon_stats import parse_weapon_stats
+from .weapon_mods import parse_weapon_mods
 
 __all__ = ["get_manifest",
            "ManifestRoot",
@@ -25,7 +26,8 @@ __all__ = ["get_manifest",
            "parse_socket_category_definitions",
            "parse_plug_set_definitions",
            "parse_lore_definitions",
-           "parse_weapon_stats"]
+           "parse_weapon_stats",
+           "parse_weapon_mods"]
 
 if __name__ == '__main__':
     pass
