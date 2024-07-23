@@ -1,6 +1,6 @@
 from json import load
 
-from infrastructure import write_to_excel, write_to_json
+from utils import write_to_excel, write_to_json
 from kernel import DataDirectory
 
 
@@ -44,5 +44,5 @@ def parse_stat_definitions():
             dictionary["name"].append(value["displayProperties"]["name"])
             dictionary["icon"].append(value["displayProperties"]["icon"])
             dictionary["hash"].append(value["hash"])
-    write_to_json(dictionary, "DestinyStatDefinition")
-    write_to_excel(dictionary, "DestinyStatDefinition")
+    write_to_json(dictionary, "DestinyStatDefinition.json")
+    write_to_excel(dictionary, "DestinyStatDefinition.xlsx")

@@ -1,9 +1,14 @@
-from .io import get_manifest, run_docker, get_filename, download_file, get_json_data, download_manifest, write_to_excel, write_to_json
+from .collectible_definitions import parse_collectible_definitions
+from .damage_type_definitions import parse_damage_type_definitions
+from .inventory_item_definitions import parse_inventory_item_definitions
+from .io import get_manifest, run_docker, get_filename, download_file, get_json_data, download_manifest
 from .manifest_response import ManifestResponse
 from .manifest_root import ManifestRoot
+from .plug_set_definitions import parse_plug_set_definitions
+from .socket_category_definitions import parse_socket_category_definitions
 from .stats_definitions import parse_stat_definitions
-from .inventory_item_definitions import parse_inventory_item_definitions
-from .collectible_definitions import parse_collectible_definitions
+from .lore_definitions import parse_lore_definitions
+from .weapon_stats import parse_weapon_stats
 
 __all__ = ["get_manifest",
            "ManifestRoot",
@@ -16,8 +21,11 @@ __all__ = ["get_manifest",
            "parse_stat_definitions",
            "parse_inventory_item_definitions",
            "parse_collectible_definitions",
-           "write_to_excel",
-           "write_to_json"]
+           "parse_damage_type_definitions",
+           "parse_socket_category_definitions",
+           "parse_plug_set_definitions",
+           "parse_lore_definitions",
+           "parse_weapon_stats"]
 
 if __name__ == '__main__':
     pass

@@ -1,7 +1,7 @@
 from json import load
 
-from infrastructure import write_to_excel, write_to_json
 from kernel import DataDirectory
+from utils import write_to_excel, write_to_json
 
 
 def parse_collectible_definitions():

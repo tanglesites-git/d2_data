@@ -1,7 +1,8 @@
-from json import loads, dumps
+from json import loads, dumps, dump
 from os import getenv
 from subprocess import run, CalledProcessError
 
+import pandas as pd
 from pybreaker import STATE_CLOSED, CircuitBreaker, CircuitMemoryStorage
 from requests import get
 
@@ -69,11 +70,28 @@ def get_json_data1(url: str) -> None:
         file.write(dumps(response, indent=2))
 
 
-def write_to_json(dictionary: dict, filename: str) -> None:
-    with open(JsonDirectory / filename, "w", encoding="utf-8") as f:
-        dump(dictionary, f, indent=4)
-
-
-def write_to_excel(dictionary: dict, filename: str) -> None:
-    df = pd.DataFrame(dictionary)
-    df.to_excel(ExcelDirectory / filename, index=False)
+# def parse_inner_json(value, dict_list: list):
+#     for k, v in value.items():
+#         if isinstance(v, dict):
+#             parse_inner_json(v, dict_list)
+#         elif isinstance(v, list) and all(isinstance(i, dict) for i in v):
+#             [parse_inner_json(i, dict_list) for i in v]
+#         else:
+#             dict_list.append({k: v})
+#
+#
+# def parse_json(filename: str, predicate: Callable = None) -> list:
+#     dict_list = []
+#     with open(DataDirectory / filename, "r", encoding="utf-8") as f:
+#         data = json.load(f)
+#         for key, value in data.items():
+#             if predicate is not None and predicate(value):
+#                 parse_inner_json(value, dict_list)
+#
+#     return dict_list
+#
+#
+# def check_is_weapon(value: dict) -> bool:
+#     return value["itemType"] == 3
+#
+#
