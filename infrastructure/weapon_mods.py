@@ -27,6 +27,7 @@ def parse_weapon_mods():
     dictionary = {
         "weapon_id": [],
         "mod_id": [],
+        "currated_rolls": []
     }
 
     with open(JsonDirectory / "DestinyPlugSetDefinition.json", "r") as ff:
@@ -43,16 +44,18 @@ def parse_weapon_mods():
                 weapon_id = value["hash"]
                 dictionary["weapon_id"].append(weapon_id)
                 mods = []
+                currated = []
                 for entry in entries:
 
                     if "reusablePlugSetHash" in entry:
+                        currated.append(entry["singleInitialItemHash"])
                         plug_set_hash = entry["reusablePlugSetHash"]
                         index = plug_set_data["hash"].index(plug_set_hash)
-                        # index = binary_search(ss, plug_set_hash)
                         plug_set_items = plug_set_data["plugsets"][index]
                         mods.append(plug_set_items)
 
                     elif "randomizedPlugSetHash" in entry:
+                        currated.append(entry["singleInitialItemHash"])
                         plug_set_hash = entry["randomizedPlugSetHash"]
                         index = plug_set_data["hash"].index(plug_set_hash)
                         plug_set_items = plug_set_data["plugsets"][index]
@@ -60,6 +63,8 @@ def parse_weapon_mods():
                     else:
                         continue
                 dictionary["mod_id"].append(mods)
+                dictionary["currated_rolls"].append(currated)
+
     write_to_json(dictionary, "DestinyWeaponMods.json")
     write_to_excel(dictionary, "DestinyWeaponMods.xlsx")
 
