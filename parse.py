@@ -19,7 +19,8 @@ def main():
 
     with ProcessPoolExecutor() as executor:
         executor.map(execute_func, [parse_stat_definitions, parse_inventory_item_definitions, parse_collectible_definitions, parse_damage_type_definitions,
-                                    parse_socket_category_definitions, parse_plug_set_definitions, parse_lore_definitions, parse_weapon_stats, parse_weapon_mods])
+                                    parse_socket_category_definitions, parse_plug_set_definitions, parse_lore_definitions, parse_weapon_stats,
+                                    parse_weapon_mods])
 
     mem_usage_end = memory_usage(include_children=True, multiprocess=True)
     print(f"Memory usage (After): {mem_usage_end[0]}MiB")

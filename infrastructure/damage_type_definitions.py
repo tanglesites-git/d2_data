@@ -33,7 +33,7 @@ def parse_damage_type_definitions():
                 icon = ""
             hash = value["hash"]
 
-            if "transparentIconPath" in value["displayProperties"]:
+            if "transparentIconPath" in value:
                 transparentIconPath = value["transparentIconPath"]
             else:
                 transparentIconPath = ""
