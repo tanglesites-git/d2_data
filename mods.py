@@ -1,6 +1,6 @@
 from json import loads, dumps
 
-from kernel import DataDirectory, JsonDirectory, MasterDirectory
+from kernel import DataDirectory, JsonDirectory
 
 diid_handler = open(DataDirectory / "DestinyInventoryItemDefinition.json", "r", encoding='utf-8')
 mods_handler = open(JsonDirectory / "DestinyWeaponMods.json", "r", encoding='utf-8')
@@ -29,35 +29,37 @@ for array in mods_data["mod_id"]:
                         dictionary_item = {}
                         ss.add(mod_id)
                         dictionary["weapon_id"].append(mod_id)
+
+                    if "icon" not in diid_data[str(mod_id)]["displayProperties"]:
+                        dictionary_item["icon"] = "None"
+
+                    if "itemTypeDisplayName" not in diid_data[str(mod_id)]:  # Some mods don't have this
+                        dictionary_item["displayName"] = "None"
+
+                    if "inventory" not in diid_data[str(mod_id)] and "tierTypeName" not in diid_data[(str(mod_id))]["inventory"]:  # Some mods don't have this
+                        dictionary_item["tierTypeName"] = "None"
+
+                    if "investmentStats" not in diid_data[str(mod_id)]:
+                        dictionary_item["stats"] = []
+
                     dictionary_item["id"] = mod_id
                     dictionary_item["name"] = diid_data[str(mod_id)]["displayProperties"]["name"]
                     dictionary_item["description"] = diid_data[str(mod_id)]["displayProperties"]["description"]
-                    if "icon" in diid_data[str(mod_id)]["displayProperties"]:
-                        dictionary_item["icon"] = diid_data[str(mod_id)]["displayProperties"]["icon"]
-                    else:
-                        dictionary_item["icon"] = "None"
-                    if "itemTypeDisplayName" in diid_data[str(mod_id)]:  # Some mods don't have this
-                        dictionary_item["displayName"] = diid_data[str(mod_id)]["itemTypeDisplayName"]
-                    else:
-                        dictionary_item["displayName"] = "None"
-                    if "inventory" in diid_data[str(mod_id)] and "tierTypeName" in diid_data[(str(mod_id))]["inventory"]:  # Some mods don't have this
-                        dictionary_item["tierTypeName"] = diid_data[str(mod_id)]["inventory"]["tierTypeName"]
-                    else:
-                        dictionary_item["tierTypeName"] = "None"
+                    dictionary_item["icon"] = diid_data[str(mod_id)]["displayProperties"]["icon"]
+                    dictionary_item["displayName"] = diid_data[str(mod_id)]["itemTypeDisplayName"]
+                    dictionary_item["tierTypeName"] = diid_data[str(mod_id)]["inventory"]["tierTypeName"]
                     dictionary_item["stats"] = []
-                    if "investmentStats" in diid_data[str(mod_id)]:
-                        for stats in diid_data[str(mod_id)]["investmentStats"]:
-                            index_of_stat_id = stats_data["hash"].index(stats["statTypeHash"])
-                            stat_dict = {
-                                "description": stats_data["description"][index_of_stat_id],
-                                "id": stats_data["hash"][index_of_stat_id],
-                                "icon": stats_data["icon"][index_of_stat_id],
-                                "name": stats_data["name"][index_of_stat_id],
-                                "value": stats["value"]
-                            }
-                            dictionary_item["stats"].append(stat_dict)
-                    else:
-                        dictionary_item["stats"] = []
+
+                    for stats in diid_data[str(mod_id)]["investmentStats"]:
+                        index_of_stat_id = stats_data["hash"].index(stats["statTypeHash"])
+                        stat_dict = {
+                            "description": stats_data["description"][index_of_stat_id],
+                            "id": stats_data["hash"][index_of_stat_id],
+                            "icon": stats_data["icon"][index_of_stat_id],
+                            "name": stats_data["name"][index_of_stat_id],
+                            "value": stats["value"]
+                        }
+                        dictionary_item["stats"].append(stat_dict)
 
                     dictionary["mod_object"].append(dictionary_item)
 
