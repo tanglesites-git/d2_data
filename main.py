@@ -1,37 +1,37 @@
-from time import perf_counter_ns
-from concurrent.futures import ThreadPoolExecutor
+import json
 
-from memory_profiler import memory_usage
+from kernel import DataDirectory
+from utils import write_to_json, write_to_excel
 
-from infrastructure import get_manifest, ManifestRoot, get_json_data
-from infrastructure.io import get_json_data1
+item_number = 0
 
-if __name__ == '__main__':
-    start = perf_counter_ns()
-    mem_usage_start = memory_usage(include_children=True, multiprocess=True)
-    print(f"Memory usage (Before): {mem_usage_start[0]}MiB")
+dictionary = {}
+dictionary_excel = {}
 
-    manifest_dict = get_manifest()
-    manifest_root = ManifestRoot(**manifest_dict)
-    files = manifest_root.Response.jsonWorldComponentContentPaths.en
-    json_world_comp_content_urls = [
-        files.DestinyInventoryItemDefinition,
-        files.DestinyDamageTypeDefinition,
-        files.DestinyStatDefinition,
-        files.DestinyPlugSetDefinition,
-        files.DestinyEquipmentSlotDefinition,
-        files.DestinyCollectibleDefinition,
-        files.DestinyLoreDefinition,
-        files.DestinySocketCategoryDefinition
-    ]
-    with ThreadPoolExecutor() as executor:
-        executor.map(get_json_data, json_world_comp_content_urls)
+with open(DataDirectory / "DestinyInventoryItemDefinition.json") as f:
+    inventory_item_definition = json.load(f)
+    print(f'Number of Items: {len(inventory_item_definition)}')
 
-    with ThreadPoolExecutor() as executor:
-        executor.map(get_json_data1, json_world_comp_content_urls)
+    for key, value in inventory_item_definition.items():
 
-    mem_usage_end = memory_usage(include_children=True, multiprocess=True)
-    print(f"Memory usage (After): {mem_usage_end[0]}MiB")
-    end = perf_counter_ns()
-    print(f"Memory usage (Difference): {mem_usage_end[0][0] - mem_usage_start[0][0]}MiB")
-    print(f"Time taken: {(end - start) / 1_000_000_000}s")
+        if 'itemTypeDisplayName' not in value:
+            continue
+        itdn = value['itemTypeDisplayName']
+        if itdn not in dictionary:
+            dictionary[itdn] = 1
+            dictionary_excel[itdn] = [1]
+        else:
+            dictionary[itdn] += 1
+            dictionary_excel[itdn][0] += 1
+        item_number += 1
+
+    dictionary1 = dict(sorted(dictionary.items(), key=lambda item: item[1]))
+    dictionary2 = dict(sorted(dictionary_excel.items(), key=lambda item: item[1][0]))
+    print(f'Number of Items with itemTypeDisplayName: {item_number}')
+    print(f'Number of Items without itemTypeDisplayName: {len(inventory_item_definition) - item_number}')
+    # print(json.dumps(dictionary2, indent=2))
+    write_to_json(dictionary1, "InventoryItemDefinitionFrequencies.json")
+    write_to_excel(dictionary2, "InventoryItemDefinitionFrequencies.xlsx")
+
+if __name__ == "__main__":
+    pass

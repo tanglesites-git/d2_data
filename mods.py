@@ -67,7 +67,7 @@ def create_mod_object(diid_data=None, mod_id=None, ss=None, dictionary_item=None
 
 
 def create_mods():
-    
+
     diid_handler = open(DataDirectory / "DestinyInventoryItemDefinition.json", "r", encoding='utf-8')
     mods_handler = open(JsonDirectory / "DestinyWeaponMods.json", "r", encoding='utf-8')
     stats_handler = open(JsonDirectory / "DestinyStatDefinition.json", "r", encoding='utf-8')
@@ -97,8 +97,8 @@ def create_mods():
                             dictionary["weapon_id"].append(mod_id)
                         data_list.append((diid_data, mod_id, ss, dictionary_item, stats_data, dictionary))
 
-            with ThreadPoolExecutor() as executor:
-                executor.map(lambda x: create_mod_object(*x), data_list)
+                with ThreadPoolExecutor() as executor:
+                    executor.map(lambda x: create_mod_object(*x), data_list)
     write_to_json(dictionary, "Mods.json")
     # write_to_excel(dictionary, "Mods.xlsx")
 
