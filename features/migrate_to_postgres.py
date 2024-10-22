@@ -3,7 +3,9 @@ from psycopg2 import pool
 from configuration import PathsIO
 from re import sub, MULTILINE
 
-connection_pool = pool.SimpleConnectionPool(1, 100, "dbname=world_content user=postgres password=postgres port=5432")
+from contexts import ConnectionPool, WorldContentConnection
+
+# connection_pool = pool.SimpleConnectionPool(1, 100, "dbname=world_content user=postgres password=postgres port=5432")
 
 def dict_factory(cursor, row):
     fields = [column[0] for column in cursor.description]
@@ -77,13 +79,12 @@ def create_postgres_tables():
 
     print(complete_query)
 
-    postgres_connection = connection_pool.getconn()
-    postgres_cursor = postgres_connection.cursor()
+    context = ConnectionPool()
+    context.set_connection(WorldContentConnection)
+    postgres_cursor = context.connection.cursor()
     postgres_cursor.execute(complete_query)
-    postgres_connection.commit()
-
-    postgres_cursor.close()
-    connection_pool.putconn(postgres_connection)
+    context.connection.commit()
+    context.put_conn()
 
 
 def migrate_to_postgres():
@@ -91,8 +92,8 @@ def migrate_to_postgres():
     sqlite_connection.row_factory = dict_factory
     sqlite_cursor = sqlite_connection.cursor()
 
-    postgres_connection = connection_pool.getconn()
-
+    context = ConnectionPool()
+    context.set_connection(WorldContentConnection)
 
     sql = """
         SELECT tbl_name FROM sqlite_master;
@@ -112,14 +113,13 @@ def migrate_to_postgres():
         value = row[1]
         list_of_tuples = [tuple(d.values()) for d in value]
 
-        c = postgres_connection.cursor()
+        c = context.connection.cursor()
         c.executemany(create_insert(name), list_of_tuples)
         print(name)
 
         c.close()
-    postgres_connection.commit()
-    connection_pool.putconn(postgres_connection)
-
+    context.connection.commit()
+    context.put_conn()
 
 if __name__ == '__main__':
     pass
