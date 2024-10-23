@@ -144,7 +144,7 @@ class WeaponsModel:
     def __eq__(self, other):
         if not isinstance(other, WeaponsModel):
             return NotImplemented
-        return self.id == other.id
+        return self._id == other._id
 
     def __ne__(self, other):
         return not self.__eq__(other)
@@ -152,9 +152,9 @@ class WeaponsModel:
     def __lt__(self, other):
         if not isinstance(other, WeaponsModel):
             return NotImplemented
-        return self.id < other.id
+        return self._id < other._id
 
     def __gt__(self, other):
         if not isinstance(other, WeaponsModel):
             return NotImplemented
-        return self.id > other.id
+        return self._id > other._id

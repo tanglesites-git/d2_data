@@ -5,6 +5,7 @@ from .lore_repository import insert_all_lore_rows, create_lore_table, get_all_lo
 from .sockets_repository import insert_all_sockets_rows, get_all_sockets_rows, create_sockets_table
 from .weapons_temp_repository import insert_all_weapons_temp_rows, create_weapons_temp_table, get_all_weapons_temp_rows
 from .weapons_repository import insert_all_weapons_rows, get_all_weapons_rows, create_weapons_table
+from .weaponstats_temp_repository import insert_all_weaponstats_temp_rows, create_weaponstats_temp_table, get_all_weaponstats_temp_rows
 
 __all__ = [
     "insert_all_stats_rows",
@@ -27,7 +28,10 @@ __all__ = [
     "create_weapons_temp_table",
     "insert_all_weapons_rows",
     "create_weapons_table",
-    "get_all_weapons_rows"
+    "get_all_weapons_rows",
+    "create_weaponstats_temp_table",
+    "insert_all_weaponstats_temp_rows",
+    "get_all_weaponstats_temp_rows"
 ]
 
 if __name__ == "__main__":
