@@ -9,6 +9,7 @@ from repositories import get_all_sockets_rows, create_sockets_table, insert_all_
 from repositories import get_all_weapons_temp_rows, create_weapons_temp_table, insert_all_weapons_temp_rows
 from repositories import get_all_weapons_rows, create_weapons_table, insert_all_weapons_rows
 from repositories import get_all_weaponstats_temp_rows, insert_all_weaponstats_temp_rows, create_weaponstats_temp_table
+from repositories import get_all_weaponstats_rows, create_weaponstats_table, insert_all_weaponstats_rows
 
 stat_rows = get_all_stats_rows()
 damage_type_rows = get_all_damage_type_rows()
@@ -18,6 +19,7 @@ socket_rows = get_all_sockets_rows()
 weapons_temp_rows = get_all_weapons_temp_rows()
 weapons_rows = get_all_weapons_rows()
 weaponstats_temp_rows = get_all_weaponstats_temp_rows()
+weaponstats_rows = get_all_weaponstats_rows()
 
 stat_keys = ('hash', 'name', 'description')
 damage_keys = ('hash', 'name', 'description', 'icon')
@@ -42,3 +44,5 @@ if __name__ == '__main__':
     process(weapons_rows, weapons_temp_keys, WeaponsModel, create_weapons_table, insert_all_weapons_rows,
             'weapons')
     process(weaponstats_temp_rows, weaponstats_temp_keys, WeaponStatsModel, create_weaponstats_temp_table, insert_all_weaponstats_temp_rows, 'weaponstats_temp')
+    process(weaponstats_rows, weaponstats_temp_keys, WeaponStatsModel, create_weaponstats_table, insert_all_weaponstats_rows, 'weaponstats')
+
