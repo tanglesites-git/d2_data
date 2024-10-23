@@ -2,7 +2,8 @@ WITH itemtable AS (SELECT json ->> 'hash'                               AS hash,
                           json -> 'displayProperties' ->> 'name'        AS name,
                           json -> 'displayProperties' ->> 'description' AS description,
                           json ->> 'itemTypeDisplayName'                AS displayname,
-                          json -> 'inventory' ->> 'tierTypeName'        AS tiertype
+                          json -> 'inventory' ->> 'tierTypeName'        AS tiertype,
+                          json -> 'displayProperties' ->> 'icon'        AS icon
                    FROM destinyinventoryitemdefinition
                    WHERE (json ->> 'itemType')::INTEGER = 19)
 
