@@ -1,4 +1,4 @@
-DROP TABLE IF EXISTS damage_type;
+DROP TABLE IF EXISTS damage_type CASCADE;
 
 CREATE TABLE IF NOT EXISTS damage_type
 (
@@ -10,6 +10,6 @@ CREATE TABLE IF NOT EXISTS damage_type
     CONSTRAINT damage_type_pkey PRIMARY KEY (id)
 );
 
-create index damage_type_idx_hash on damage_type using btree (hash);
-create index damage_type_idx_name on damage_type using btree (name);
+CREATE INDEX damage_type_idx_hash ON damage_type USING btree (hash);
+CREATE INDEX damage_type_idx_name ON damage_type USING btree (name);
 

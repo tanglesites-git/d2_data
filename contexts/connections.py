@@ -78,6 +78,18 @@ def get_all_rows(filename, context) -> list[tuple[int, str]]:
         return rows
 
 
+def get_all_rows_alt(filename, context) -> list[tuple[int, str]]:
+    with open(PathsIO.WORLD_CONTENT_SQL_DIRECTORY / f'{filename}.sql', 'r', encoding='utf-8') as file:
+        query = file.read()
+        context.set_connection(D2AppConnection)
+        cursor = context.connection.cursor()
+        cursor.execute(query)
+        rows = cursor.fetchall()
+        cursor.close()
+        context.put_conn()
+        return rows
+
+
 def insert_all_rows(rows: list[tuple[int, str]], query, context) -> None:
     context.set_connection(D2AppConnection)
     cursor = context.connection.cursor()

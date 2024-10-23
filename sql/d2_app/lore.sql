@@ -1,4 +1,4 @@
-DROP TABLE IF EXISTS lore;
+DROP TABLE IF EXISTS lore CASCADE;
 
 CREATE TABLE IF NOT EXISTS lore
 (
@@ -9,4 +9,4 @@ CREATE TABLE IF NOT EXISTS lore
     CONSTRAINT lore_pkey PRIMARY KEY (id)
 );
 
-create index lore_idx_hash on lore using btree (hash);
+CREATE INDEX lore_idx_hash ON lore USING btree (hash);

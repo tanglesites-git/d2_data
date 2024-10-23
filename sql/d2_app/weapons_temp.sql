@@ -1,4 +1,4 @@
-DROP TABLE IF EXISTS weapons_temp;
+DROP TABLE IF EXISTS weapons_temp CASCADE;
 
 CREATE TABLE IF NOT EXISTS weapons_temp
 (

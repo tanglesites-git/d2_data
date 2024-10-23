@@ -6,6 +6,7 @@ from repositories import get_all_collectibles_rows, create_collectibles_table, i
 from repositories import get_all_lore_rows, create_lore_table, insert_all_lore_rows
 from repositories import get_all_sockets_rows, create_sockets_table, insert_all_sockets_rows
 from repositories import get_all_weapons_temp_rows, create_weapons_temp_table, insert_all_weapons_temp_rows
+from repositories import get_all_weapons_rows, create_weapons_table, insert_all_weapons_rows
 
 stat_rows = get_all_stats_rows()
 damage_type_rows = get_all_damage_type_rows()
@@ -13,6 +14,7 @@ collectible_rows = get_all_collectibles_rows()
 lore_rows = get_all_lore_rows()
 socket_rows = get_all_sockets_rows()
 weapons_temp_rows = get_all_weapons_temp_rows()
+weapons_rows = get_all_weapons_rows()
 
 stat_keys = ('hash', 'name', 'description')
 damage_keys = ('hash', 'name', 'description', 'icon')
@@ -33,3 +35,5 @@ if __name__ == '__main__':
     process(lore_rows, lore_keys, LoreModel, create_lore_table, insert_all_lore_rows, 'lore')
     process(socket_rows, socket_keys, SocketsModel, create_sockets_table, insert_all_sockets_rows, 'sockets')
     process(weapons_temp_rows, weapons_temp_keys, WeaponsModel, create_weapons_temp_table, insert_all_weapons_temp_rows, 'weapons_temp')
+    process(weapons_rows, weapons_temp_keys, WeaponsModel, create_weapons_table, insert_all_weapons_rows,
+            'weapons')

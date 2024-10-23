@@ -1,10 +1,11 @@
-drop table if EXISTS collectibles;
+DROP TABLE IF EXISTS collectibles CASCADE;
 
-CREATE TABLE IF NOT EXISTS collectibles (
-    id SERIAL not null ,
-    hash bigint null ,
-    sourcestring varchar null,
+CREATE TABLE IF NOT EXISTS collectibles
+(
+    id           SERIAL  NOT NULL,
+    hash         BIGINT  NULL,
+    sourcestring VARCHAR NULL,
     CONSTRAINT collectibles_pkey PRIMARY KEY (id)
 );
 
-create index collectibles_idx_hash on collectibles using btree (hash);
+CREATE INDEX collectibles_idx_hash ON collectibles USING btree (hash);
