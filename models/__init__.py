@@ -4,6 +4,7 @@ from .CollectiblesModel import CollectiblesModel
 from .LoreModel import LoreModel
 from .SocketsModel import SocketsModel
 from .WeaponsModel import WeaponsModel
+from .WeaponStatsModel import WeaponStatsModel
 
 __all__ = [
     "StatModel",
@@ -11,5 +12,6 @@ __all__ = [
     "CollectiblesModel",
     "LoreModel",
     "SocketsModel",
-    "WeaponsModel"
+    "WeaponsModel",
+    "WeaponStatsModel"
 ]

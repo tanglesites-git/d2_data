@@ -1,5 +1,6 @@
 from features import process
-from models import StatModel, DamageTypeModel, CollectiblesModel, LoreModel, SocketsModel, WeaponsModel
+from models import StatModel, DamageTypeModel, CollectiblesModel, LoreModel, SocketsModel, WeaponsModel, \
+    WeaponStatsModel
 from repositories import get_all_stats_rows, create_stats_table, insert_all_stats_rows
 from repositories import get_all_damage_type_rows, create_damage_type_table, insert_all_damage_type_rows
 from repositories import get_all_collectibles_rows, create_collectibles_table, insert_all_collectibles_rows
@@ -7,6 +8,8 @@ from repositories import get_all_lore_rows, create_lore_table, insert_all_lore_r
 from repositories import get_all_sockets_rows, create_sockets_table, insert_all_sockets_rows
 from repositories import get_all_weapons_temp_rows, create_weapons_temp_table, insert_all_weapons_temp_rows
 from repositories import get_all_weapons_rows, create_weapons_table, insert_all_weapons_rows
+from repositories import get_all_weaponstats_temp_rows, insert_all_weaponstats_temp_rows, create_weaponstats_temp_table
+from repositories import get_all_weaponstats_rows, create_weaponstats_table, insert_all_weaponstats_rows
 
 stat_rows = get_all_stats_rows()
 damage_type_rows = get_all_damage_type_rows()
@@ -15,6 +18,8 @@ lore_rows = get_all_lore_rows()
 socket_rows = get_all_sockets_rows()
 weapons_temp_rows = get_all_weapons_temp_rows()
 weapons_rows = get_all_weapons_rows()
+weaponstats_temp_rows = get_all_weaponstats_temp_rows()
+weaponstats_rows = get_all_weaponstats_rows()
 
 stat_keys = ('hash', 'name', 'description')
 damage_keys = ('hash', 'name', 'description', 'icon')
@@ -27,6 +32,7 @@ weapons_temp_keys = (
     'collectible_id', 'lore_id', 'flavortext',
     'icon', 'watermark', 'screenshot'
 )
+weaponstats_temp_keys = ('hash', 'stathash', 'value')
 
 if __name__ == '__main__':
     process(stat_rows, stat_keys, StatModel, create_stats_table, insert_all_stats_rows, 'stats')
@@ -37,3 +43,6 @@ if __name__ == '__main__':
     process(weapons_temp_rows, weapons_temp_keys, WeaponsModel, create_weapons_temp_table, insert_all_weapons_temp_rows, 'weapons_temp')
     process(weapons_rows, weapons_temp_keys, WeaponsModel, create_weapons_table, insert_all_weapons_rows,
             'weapons')
+    process(weaponstats_temp_rows, weaponstats_temp_keys, WeaponStatsModel, create_weaponstats_temp_table, insert_all_weaponstats_temp_rows, 'weaponstats_temp')
+    process(weaponstats_rows, weaponstats_temp_keys, WeaponStatsModel, create_weaponstats_table, insert_all_weaponstats_rows, 'weaponstats')
+
