@@ -6,3 +6,5 @@ CREATE TABLE IF NOT EXISTS collectibles (
     sourcestring varchar null,
     CONSTRAINT collectibles_pkey PRIMARY KEY (id)
 );
+
+create index collectibles_idx_hash on collectibles using btree (hash);

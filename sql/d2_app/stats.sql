@@ -9,5 +9,5 @@ CREATE TABLE IF NOT EXISTS stats
     CONSTRAINT stats_pkey PRIMARY KEY (id)
 );
 
--- INSERT INTO stats (hash, name, description)
--- VALUES (% S, % S, % S);
+create index stats_idx_hash on stats using btree (hash);
+create index stats_idx_name on stats using btree (name);

@@ -10,3 +10,6 @@ CREATE TABLE IF NOT EXISTS damage_type
     CONSTRAINT damage_type_pkey PRIMARY KEY (id)
 );
 
+create index damage_type_idx_hash on damage_type using btree (hash);
+create index damage_type_idx_name on damage_type using btree (name);
+

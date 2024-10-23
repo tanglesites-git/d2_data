@@ -8,3 +8,5 @@ CREATE TABLE IF NOT EXISTS lore
     subtitle    VARCHAR NULL,
     CONSTRAINT lore_pkey PRIMARY KEY (id)
 );
+
+create index lore_idx_hash on lore using btree (hash);
