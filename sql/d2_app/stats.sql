@@ -1,4 +1,4 @@
-DROP TABLE IF EXISTS stats;
+DROP TABLE IF EXISTS stats CASCADE;
 
 CREATE TABLE IF NOT EXISTS stats
 (
@@ -9,5 +9,5 @@ CREATE TABLE IF NOT EXISTS stats
     CONSTRAINT stats_pkey PRIMARY KEY (id)
 );
 
--- INSERT INTO stats (hash, name, description)
--- VALUES (% S, % S, % S);
+CREATE INDEX stats_idx_hash ON stats USING btree (hash);
+CREATE INDEX stats_idx_name ON stats USING btree (name);
